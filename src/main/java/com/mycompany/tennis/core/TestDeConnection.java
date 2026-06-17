@@ -1,8 +1,6 @@
 package com.mycompany.tennis.core;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class TestDeConnection {
     public static void main(String... args){
@@ -13,6 +11,14 @@ public class TestDeConnection {
 
             //MySQL driver MySQL Connector
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tennis?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=Europe/Paris&allowPublicKeyRetrieval=true","EURKODEV","Bouftou80@");
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT NOM, PRENOM FROM JOUEUR");
+            while (rs.next()) {
+                final String nom=rs.getString("NOM");
+                final String prenom=rs.getString("PRENOM");
+                final Long id = rs.getLong("ID");
+                System.out.println("Le joueur ");
+            }
             //Oracle Driver officiel OJDBC Thin
             //conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:tennis","COURSDB","COURSDB");
             //Postgres Driver officiel
