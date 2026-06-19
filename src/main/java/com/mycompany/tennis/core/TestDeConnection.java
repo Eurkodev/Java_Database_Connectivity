@@ -10,15 +10,21 @@ public class TestDeConnection {
             //Class.forName(DRIVER_CLASS_NAME);
 
             //MySQL driver MySQL Connector
+
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tennis?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=Europe/Paris&allowPublicKeyRetrieval=true","EURKODEV","Bouftou80@");
-            Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT NOM, PRENOM FROM JOUEUR");
+            long identifiant = 128L;
+            PreparedStatement prepareStatement = conn.prepareStatement("SELECT ID, NOM, PRENOM FROM JOUEUR WHERE ID =? ");
+            prepareStatement.setLong(1, identifiant);
+            ResultSet rs = prepareStatement.executeQuery();
+
             while (rs.next()) {
                 final String nom=rs.getString("NOM");
                 final String prenom=rs.getString("PRENOM");
                 final Long id = rs.getLong("ID");
-                System.out.println("Le joueur ");
+                System.out.println("Le joueur / la joueuse représenté(e) par le numéro " + id + " est " + prenom + " " + nom );
             }
+            prepareStatement.setLong(1,129);
+            ResultSet rs2=prepareStatement.executeQuery();
             //Oracle Driver officiel OJDBC Thin
             //conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:tennis","COURSDB","COURSDB");
             //Postgres Driver officiel
