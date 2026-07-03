@@ -12,7 +12,7 @@ public class TestDeConnection {
 
             BasicDataSource dataSource = new BasicDataSource();
             dataSource.setUrl("jdbc:mysql://localhost:3306/tennis?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=Europe/Paris&allowPublicKeyRetrieval=true");
-
+            dataSource.setInitialSize(5);
             dataSource.setUsername("EURKODEV");
             dataSource.setPassword("Bouftou80@");
 
