@@ -5,10 +5,7 @@ import com.mycompany.tennis.core.entity.Joueur;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +20,17 @@ public class JoueurRepositoryImpl {
 
             conn.setAutoCommit(false);
 
-            PreparedStatement prepareStatement = conn.prepareStatement("INSERT INTO JOUEUR (NOM, PRENOM, SEXE) VALUES (?, ?, ?)");
+            PreparedStatement prepareStatement = conn.prepareStatement("INSERT INTO JOUEUR (NOM, PRENOM, SEXE) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
             prepareStatement.setString(1, joueur.getNom());
             prepareStatement.setString(2, joueur.getPrenom());
             prepareStatement.setString(3, joueur.getSexe().toString());
             int nbEnregistrementModifies = prepareStatement.executeUpdate();
+            ResultSet rs = prepareStatement.getGeneratedKeys();
+
+            if(rs.next()) {
+                joueur.setId(rs.getLong(1));
+            }
 
             conn.commit();
             System.out.println("Joueur créé");
@@ -111,7 +113,7 @@ public class JoueurRepositoryImpl {
 
 
             conn.commit();
-            System.out.println("Joueur supprimé");
+            System.out.println("Tournoi supprimé");
         } catch (
                 SQLException e) {
             e.printStackTrace();
