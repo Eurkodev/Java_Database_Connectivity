@@ -1,5 +1,7 @@
 package com.mycompany.tennis.core.entity;
 
+
+
 public class Match {
 
     private Long id;
