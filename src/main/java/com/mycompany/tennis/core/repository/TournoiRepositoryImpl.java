@@ -1,8 +1,10 @@
 package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.DataSourceProvider;
+import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.entity.Tournoi;
+import org.hibernate.Session;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -140,50 +142,22 @@ public class TournoiRepositoryImpl {
         }
     }
         public Tournoi getById(Long id) {
-            Connection conn = null;
+
+
+            Session session = null;
             Tournoi tournoi = null;
             try {
+            session = HibernateUtil.getSessionFactory().openSession();
 
-                DataSource dataSource=DataSourceProvider.getSingleDataSourceInstance();
+            tournoi = session.get(Tournoi.class, id);
+            System.out.println("Tournoi lu");
+            }
+            catch(Throwable t) {
+                t.printStackTrace();
+            }
+            finally {
+                if(session!=null) { session.close();}
 
-                conn = dataSource.getConnection();
-
-                conn.setAutoCommit(false);
-
-
-                PreparedStatement prepareStatement = conn.prepareStatement("SELECT NOM, CODE FROM TOURNOI WHERE ID=?");
-
-
-                prepareStatement.setLong(1, id);
-
-
-                ResultSet rs = prepareStatement.executeQuery();
-                if(rs.next()) {
-                    tournoi = new Tournoi();
-                    tournoi.setId(id);
-                    tournoi.setNom(rs.getString("NOM"));
-                    tournoi.setCode(rs.getString("CODE"));
-
-                }
-
-                conn.commit();
-                    System.out.println("Tournoi lu");
-            } catch (
-                    SQLException e) {
-                e.printStackTrace();
-                try {
-                    if (conn != null) conn.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            } finally {
-                try {
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
             }
             return tournoi;
         }
