@@ -20,7 +20,7 @@ public class MatchRepositoryImpl {
 
             conn.setAutoCommit(false);
 
-            PreparedStatement prepareStatement = conn.prepareStatement("INSERT INTO MATCH_TENNIS (ID, TYPE_EPREUVE, ID_TOURNOI) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement prepareStatement = conn.prepareStatement("INSERT INTO MATCH_TENNIS (ID_EPREUVE, ID_VAINQUEUR, ID_FINALISTE) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
             prepareStatement.setLong(1, match.getEpreuve().getId());
             prepareStatement.setLong(2, match.getVainqueur().getId());
