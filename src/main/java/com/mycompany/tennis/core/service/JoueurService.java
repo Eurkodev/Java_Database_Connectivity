@@ -19,4 +19,8 @@ public class JoueurService {
 
     }
 
+    public void renomme(Long id, String nouveauNom) {
+        joueurRepository.renomme(id, nouveauNom);
+    }
+
 }

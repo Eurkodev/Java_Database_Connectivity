@@ -5,6 +5,7 @@ import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.entity.Tournoi;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -15,46 +16,23 @@ public class TournoiRepositoryImpl {
 
 
     public Tournoi create(Tournoi tournoi) {
-        Connection conn = null;
+        Transaction tx = null;
+        Session session = null;
         try {
-            DataSource dataSoure = DataSourceProvider.getSingleDataSourceInstance();
+            session = HibernateUtil.getSessionFactory().openSession();
+            session.persist(tournoi);
+            session.beginTransaction();
+            tx = session.getTransaction();
+            tx.commit();
+            System.out.println("Le tournoi a été créé");
 
-            conn = dataSoure.getConnection();
-
-            conn.setAutoCommit(false);
-            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO TOURNOI (NOM, CODE) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, tournoi.getNom());
-            preparedStatement.setString(2, tournoi.getCode());
-
-            preparedStatement.executeUpdate();
-
-            ResultSet rs=preparedStatement.getGeneratedKeys();
-
-            if (rs.next()) {
-                tournoi.setId(rs.getLong(1));
-            }
-
-            System.out.println("Tournoi créé");
-
-            conn.commit();
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            if(tx!=null) tx.rollback();
             e.printStackTrace();
-            try {
-                if (conn != null) {
-                    conn.rollback();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+
         } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+          if(session!=null) session.close();
+
         }
 
         return tournoi;
