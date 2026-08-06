@@ -142,11 +142,8 @@ public class JoueurRepositoryImpl {
     }
     public Joueur getById(Long id) {
 
-        Joueur joueur = null;
-        Session session = null;
-
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            joueur = session.get(Joueur.class, id);
+            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+            Joueur joueur = session.get(Joueur.class, id);
 
             System.out.println("Joueur lu");
 
