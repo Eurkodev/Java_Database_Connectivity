@@ -14,7 +14,7 @@ import java.util.List;
 
 public class JoueurRepositoryImpl {
 
-    public void renomme(Long id, String nouveauNom) {
+    /*public void renomme(Long id, String nouveauNom) {
         Joueur joueur = null;
         Session session = null;
         Transaction tx = null;
@@ -38,17 +38,14 @@ public class JoueurRepositoryImpl {
             if(session!=null) { session.close();}
         }
 
-    }
+    }*/
 
     public void create(Joueur joueur) {
       Session session = null;
       Transaction tx = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
             session.persist(joueur);
-            session.beginTransaction();
-            tx = session.getTransaction();
-            tx.commit();
             System.out.println("Joueur créé");
 
         }
@@ -147,21 +144,12 @@ public class JoueurRepositoryImpl {
 
         Joueur joueur = null;
         Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
+
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
             joueur = session.get(Joueur.class, id);
 
             System.out.println("Joueur lu");
 
-        }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-
-
-           finally {
-            if(session!=null) { session.close();}
-         }
         return joueur;
     }
 
