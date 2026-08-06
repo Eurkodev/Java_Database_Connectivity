@@ -15,9 +15,7 @@ public class Score {
         return match;
     }
 
-    public void setMatch(Match match) {
-        this.match = match;
-    }
+    public void setMatch(Match match) {this.match = match;}
 
     public Long getId() {
         return id;

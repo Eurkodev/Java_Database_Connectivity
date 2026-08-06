@@ -18,7 +18,7 @@ public class ScoreRepositoryImpl {
 
             conn.setAutoCommit(false);
 
-            PreparedStatement prepareStatement = conn.prepareStatement("INSERT INTO SCORE_VAINQUEUR (ID_MATCH, SET_1, SET_2, SET_3, SET_4, SET_5 ) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement prepareStatement = conn.prepareStatement("INSERT INTO SCORE_VAINQUEUR (ID_MATCH, SET_1, SET_2, SET_3, SET_4, SET_5 ) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
             prepareStatement.setLong(1, score.getMatch().getId());
             prepareStatement.setLong(2, score.getSet1());
