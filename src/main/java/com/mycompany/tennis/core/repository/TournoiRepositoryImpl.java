@@ -82,61 +82,17 @@ public class TournoiRepositoryImpl {
     }
 
     public void delete(Long id) {
-        Connection conn = null;
-        try {
+        Tournoi tournoi = new Tournoi();
+        tournoi.setId(id);
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 
-            DataSource dataSource = DataSourceProvider.getSingleDataSourceInstance();
-
-            conn = dataSource.getConnection();
-
-            conn.setAutoCommit(false);
-
-            PreparedStatement prepareStatement = conn.prepareStatement("DELETE FROM TOURNOI WHERE ID=?");
-
-            prepareStatement.setLong(1, id);
-
-
-            prepareStatement.executeUpdate();
-
-
-            conn.commit();
-            System.out.println("Tournoi supprimé");
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        session.delete(tournoi);
     }
-        public Tournoi getById(Long id) {
+    public Tournoi getById(Long id) {
 
-
-            Session session = null;
-            Tournoi tournoi = null;
-            try {
-            session = HibernateUtil.getSessionFactory().openSession();
-
-            tournoi = session.get(Tournoi.class, id);
+            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+            Tournoi tournoi = session.get(Tournoi.class, id);
             System.out.println("Tournoi lu");
-            }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-            finally {
-                if(session!=null) { session.close();}
-
-            }
             return tournoi;
         }
 

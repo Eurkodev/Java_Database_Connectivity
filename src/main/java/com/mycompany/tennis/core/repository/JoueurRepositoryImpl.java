@@ -60,44 +60,16 @@ public class JoueurRepositoryImpl {
         }
     }
     public void delete(Long id) {
-        Connection conn = null;
-        try {
+        Joueur joueur = getById(id);
 
-            DataSource dataSource=DataSourceProvider.getSingleDataSourceInstance();
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        joueur.setId(id);
+        session.delete(joueur);
 
-            conn = dataSource.getConnection();
-
-            conn.setAutoCommit(false);
-
-            PreparedStatement prepareStatement = conn.prepareStatement("DELETE FROM JOUEUR WHERE ID=?");
-
-            prepareStatement.setLong(1, id);
-
-
-            int nbEnregistrementModifies = prepareStatement.executeUpdate();
-
-
-            conn.commit();
-            System.out.println("Tournoi supprimé");
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
 
-    }
+
+
     public Joueur getById(Long id) {
 
             Session session = HibernateUtil.getSessionFactory().getCurrentSession();
