@@ -59,48 +59,6 @@ public class JoueurRepositoryImpl {
             if(session!=null) { session.close();}
         }
     }
-    public void update(Joueur joueur) {
-        Connection conn = null;
-        try {
-
-            DataSource dataSource=DataSourceProvider.getSingleDataSourceInstance();
-
-            conn = dataSource.getConnection();
-
-            conn.setAutoCommit(false);
-
-            PreparedStatement prepareStatement = conn.prepareStatement("UPDATE JOUEUR SET NOM=?, PRENOM=?, SEXE=? WHERE ID=?");
-
-            prepareStatement.setString(1, joueur.getNom());
-            prepareStatement.setString(2, joueur.getPrenom());
-            prepareStatement.setString(3, joueur.getSexe().toString());
-            prepareStatement.setLong(4, joueur.getId());
-
-
-            int nbEnregistrementModifies = prepareStatement.executeUpdate();
-
-
-            conn.commit();
-            System.out.println("Joueur modifié");
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
     public void delete(Long id) {
         Connection conn = null;
         try {
