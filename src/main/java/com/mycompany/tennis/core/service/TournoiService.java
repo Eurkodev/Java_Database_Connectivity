@@ -13,13 +13,42 @@ public class TournoiService {
         this.tournoiRepository = new TournoiRepositoryImpl();
     }
 
-    public Tournoi getTournoi(long idTournoi) {
-        Tournoi rs = tournoiRepository.getById(idTournoi);
-        return rs;
+    public Tournoi getTournoi(Long idTournoi) {
+        Transaction tx = null;
+        Session session = null;
+        Tournoi trn = null;
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+            trn = tournoiRepository.getById(idTournoi);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (session != null) session.close();
+        }
+        return trn;
     }
-
     public void createTournoi(Tournoi tournoi) {
+        Transaction tx = null;
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
             tournoiRepository.create(tournoi);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (session != null) session.close();
+        }
+
+
+
+
+
     }
 
 

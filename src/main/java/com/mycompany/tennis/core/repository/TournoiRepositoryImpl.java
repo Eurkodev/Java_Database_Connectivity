@@ -97,11 +97,6 @@ public class TournoiRepositoryImpl {
         }
 
 
-
-
-
-
-
     public List<Tournoi> list() {
         Connection conn = null;
         List<Tournoi> tournois = new ArrayList<>();

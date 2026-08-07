@@ -42,7 +42,7 @@ public class JoueurRepositoryImpl {
 
     public void create(Joueur joueur) {
       Session session = null;
-      Transaction tx = null;
+      Transaction tx = null; 
         try {
             session = HibernateUtil.getSessionFactory().getCurrentSession();
             session.persist(joueur);
