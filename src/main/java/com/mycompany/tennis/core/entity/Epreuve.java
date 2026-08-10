@@ -9,7 +9,7 @@ public class Epreuve {
 @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private short annee;
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_TOURNOI")
     private Tournoi tournoi;
     @Column(name = "TYPE_EPREUVE" )
