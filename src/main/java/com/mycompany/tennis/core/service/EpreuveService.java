@@ -5,6 +5,7 @@ import com.mycompany.tennis.core.entity.Epreuve;
 import com.mycompany.tennis.core.entity.Tournoi;
 import com.mycompany.tennis.core.repository.EpreuveRepositoryImpl;
 import com.mycompany.tennis.core.repository.TournoiRepositoryImpl;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -14,7 +15,7 @@ public class EpreuveService {
     public EpreuveService() {this.epreuveRepository = new EpreuveRepositoryImpl();
     }
 
-    public Epreuve getEpreuve(Long id) {
+    public Epreuve getEpreuveAvecTournoi(Long id) {
         Transaction tx = null;
         Session session = null;
         Epreuve epreuve = null;
@@ -22,7 +23,9 @@ public class EpreuveService {
             session = HibernateUtil.getSessionFactory().getCurrentSession();
             tx = session.beginTransaction();
             epreuve = epreuveRepository.getById(id);
-            System.out.println("L'épreuve sélectionnée se déroule en : " + epreuve.getAnnee() + " et il s'agit du tournoi " + epreuve.getTournoi().getNom());
+            System.out.println("La classe de ma propriété torunoi est : " + epreuve.getTournoi().getClass().getName());
+            System.out.println("L'identifiant du tournoi est : " + epreuve.getTournoi().getId());
+            Hibernate.initialize(epreuve.getTournoi());
             tx.commit();
 
         } catch (Exception e) {
@@ -31,7 +34,24 @@ public class EpreuveService {
         } finally {
             if (session != null) session.close();
         }
-        return epreuve ;
+        return epreuve;
     }
+    public Epreuve getEpreuveSansTournoi(Long id) {
+        Transaction tx = null;
+        Session session = null;
+        Epreuve epreuve = null;
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+            epreuve = epreuveRepository.getById(id);
+            tx.commit();
 
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (session != null) session.close();
+        }
+        return epreuve;
+    }
 }
