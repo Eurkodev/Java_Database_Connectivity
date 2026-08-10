@@ -9,7 +9,8 @@ public class Epreuve {
 @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private short annee;
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "ID_TOURNOI")
     private Tournoi tournoi;
     @Column(name = "TYPE_EPREUVE" )
     private Character typeEpreuve;
