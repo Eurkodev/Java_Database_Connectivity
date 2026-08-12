@@ -15,8 +15,8 @@ public class Match {
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_FINALISTE")
     private Joueur finaliste;
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_EPREUVE")
+    @OneToOne
+    @JoinColumn (name = "ID_EPREUVE")
     private Epreuve epreuve;
     @Transient
     private Score score;

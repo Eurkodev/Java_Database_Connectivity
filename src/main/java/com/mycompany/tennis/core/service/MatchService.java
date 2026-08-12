@@ -4,9 +4,11 @@ import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.dto.EpreuveFullDto;
 import com.mycompany.tennis.core.dto.JoueurDto;
 import com.mycompany.tennis.core.dto.MatchDto;
+import com.mycompany.tennis.core.dto.TournoiDto;
 import com.mycompany.tennis.core.entity.Epreuve;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.entity.Match;
+import com.mycompany.tennis.core.entity.Tournoi;
 import com.mycompany.tennis.core.repository.MatchRepositoryImpl;
 import com.mycompany.tennis.core.repository.ScoreRepositoryImpl;
 import org.hibernate.Session;
@@ -33,12 +35,15 @@ public class MatchService {
         EpreuveFullDto epreuveFullDto = null;
         JoueurDto joueurVainqueurDto = null;
         JoueurDto joueurFinalisteDto = null;
+        TournoiDto tournoiDto = null;
 
             try {
                 session = HibernateUtil.getSessionFactory().getCurrentSession();
                 tx = session.beginTransaction();
                 matchDto = new MatchDto();
                 match = matchRepository.getById(id);
+                matchDto.setId(match.getId());
+
                 joueurVainqueurDto = new JoueurDto();
                 joueurFinalisteDto = new JoueurDto();
 
@@ -55,15 +60,20 @@ public class MatchService {
                 matchDto.setFinaliste(joueurFinalisteDto);
 
                 epreuveFullDto = new EpreuveFullDto();
-                matchDto.setId(match.getId());
                 Epreuve epreuve = new Epreuve();
+                tournoiDto = new TournoiDto();
+                matchDto.setEpreuve(epreuveFullDto);
+
+                tournoiDto.setId(match.getEpreuve().getTournoi().getId());
+                tournoiDto.setCode(match.getEpreuve().getTournoi().getCode());
+                tournoiDto.setNom(match.getEpreuve().getTournoi().getNom());
                 epreuveFullDto.setId(match.getEpreuve().getId());
                 epreuveFullDto.setAnnee(match.getEpreuve().getAnnee());
                 epreuveFullDto.setTypeEpreuve(match.getEpreuve().getTypeEpreuve());
+                epreuveFullDto.setTournoi(tournoiDto);
 
-                matchDto.setEpreuve(epreuveFullDto);
 
-            System.out.println("L'identifiant du match demandé est : " + matchDto.getId() + " et le vainqueur est "  + matchDto.getVainqueur() + " et le finaliste est " + match.getFinaliste());
+            System.out.println("L'identifiant du match demandé est : " + matchDto.getId() + " et le vainqueur est "  + matchDto.getVainqueur().getNom() + " et le finaliste est " + match.getFinaliste().getNom());
             tx.commit();
             System.out.println("Joueur lu");
 
