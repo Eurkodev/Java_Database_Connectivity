@@ -27,8 +27,7 @@ public class EpreuveService {
             epreuve = epreuveRepository.getById(id);
             System.out.println("La classe de ma propriété torunoi est : " + epreuve.getTournoi().getClass().getName());
             System.out.println("L'identifiant du tournoi est : " + epreuve.getTournoi().getId());
-            Hibernate.initialize(epreuve.getTournoi());
-            tx.commit();
+            // Hibernate.initialize(epreuve.getTournoi());
             dto = new EpreuveFullDto();
             dto.setId(epreuve.getId());
             dto.setAnnee(epreuve.getAnnee());
@@ -38,6 +37,7 @@ public class EpreuveService {
             tournoiDto.setNom(epreuve.getTournoi().getNom());
             tournoiDto.setCode(epreuve.getTournoi().getCode());
             dto.setTournoi(tournoiDto);
+            tx.commit();
 
         } catch (Exception e) {
             if (tx != null) tx.rollback();

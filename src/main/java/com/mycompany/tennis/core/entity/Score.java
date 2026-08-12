@@ -1,6 +1,5 @@
 package com.mycompany.tennis.core.entity;
 
-import org.hibernate.annotations.Entity;
 
 import javax.persistence.*;
 
