@@ -28,6 +28,6 @@ public class TravauxPratiques {
         tournoi.setNom("Rabat");
         tournoi.setCode("MR");
 
-        tournoiService.createTournoi(tournoi);
+       // tournoiService.createTournoi(tournoi);
     }
  }

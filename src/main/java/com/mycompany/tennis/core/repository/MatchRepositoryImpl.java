@@ -1,8 +1,13 @@
 package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.DataSourceProvider;
+import com.mycompany.tennis.core.HibernateUtil;
+import com.mycompany.tennis.core.dto.JoueurDto;
+import com.mycompany.tennis.core.dto.MatchDto;
 import com.mycompany.tennis.core.entity.Joueur;
 import com.mycompany.tennis.core.entity.Match;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -51,6 +56,13 @@ public class MatchRepositoryImpl {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Match getById(Long id) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        Match match = session.get(Match.class, id);
+        System.out.println("Match lu");
+        return match;
     }
 
 }
