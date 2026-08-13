@@ -1,6 +1,7 @@
 package com.mycompany.tennis.core.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "EPREUVE")
@@ -14,6 +15,24 @@ public class Epreuve {
     private Tournoi tournoi;
     @Column(name = "TYPE_EPREUVE" )
     private Character typeEpreuve;
+@ManyToMany
+@JoinTable(
+      name="PARTICIPANTS",
+      joinColumns = {@JoinColumn(name = "ID_EPREUVE")},
+      inverseJoinColumns =  {@JoinColumn(name = "ID_JOUEUR")}
+
+)
+
+    private Set<Joueur> participants;
+
+    public Set<Joueur> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<Joueur> participants) {
+        this.participants = participants;
+    }
+
     public Long getId() {
         return id;
     }
