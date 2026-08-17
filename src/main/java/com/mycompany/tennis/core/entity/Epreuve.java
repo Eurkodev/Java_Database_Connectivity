@@ -15,7 +15,7 @@ public class Epreuve {
     private Tournoi tournoi;
     @Column(name = "TYPE_EPREUVE" )
     private Character typeEpreuve;
-@ManyToMany
+@ManyToMany 
 @JoinTable(
       name="PARTICIPANTS",
       joinColumns = {@JoinColumn(name = "ID_EPREUVE")},

@@ -1,12 +1,16 @@
 package com.mycompany.tennis.core.repository;
 
 import com.mycompany.tennis.core.DataSourceProvider;
+import com.mycompany.tennis.core.EntityManagerHolder;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.entity.Joueur;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -41,24 +45,16 @@ public class JoueurRepositoryImpl {
     }*/
 
     public void create(Joueur joueur) {
-      Session session = null;
-      Transaction tx = null; 
-        try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
+           Session session = HibernateUtil.getSessionFactory().getCurrentSession();
             session.persist(joueur);
             System.out.println("Joueur créé");
 
         }
-        catch(Exception t) {
-            if(tx!=null) tx.rollback();
-            t.printStackTrace();
-        }
 
 
-        finally {
-            if(session!=null) { session.close();}
-        }
-    }
+
+
+
     public void delete(Long id) {
         Joueur joueur = getById(id);
 
@@ -80,50 +76,13 @@ public class JoueurRepositoryImpl {
         return joueur;
     }
 
-    public List<Joueur> list () {
-        Connection conn = null;
-        List<Joueur> joueurs = new ArrayList<>();
-        try {
+    public List<Joueur> list (char sexe ) {
 
-            DataSource dataSource=DataSourceProvider.getSingleDataSourceInstance();
-
-            conn = dataSource.getConnection();
-
-            conn.setAutoCommit(false);
-
-
-            PreparedStatement prepareStatement = conn.prepareStatement("SELECT ID, NOM, PRENOM, SEXE FROM JOUEUR");
-
-            ResultSet rs = prepareStatement.executeQuery();
-            while(rs.next()) {
-                Joueur joueur = new Joueur();
-                joueur.setId(rs.getLong("ID"));
-                joueur.setNom(rs.getString("NOM"));
-                joueur.setPrenom(rs.getString("PRENOM"));
-                joueur.setSexe(rs.getString("NOM").charAt(0));
-                joueurs.add(joueur);
-            }
-
-            conn.commit();
-            System.out.println("Joueurs lus");
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return joueurs;
+        EntityManager em = EntityManagerHolder.getCurrentEntityManager();
+        TypedQuery<Joueur> query = em.createNamedQuery("given sexe",Joueur.class);
+        query.setParameter(0, sexe);
+        List<Joueur> joueursList = query.getResultList();
+        return joueursList;
     }
 }
 

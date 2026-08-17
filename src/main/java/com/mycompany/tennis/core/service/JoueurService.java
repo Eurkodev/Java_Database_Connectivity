@@ -1,10 +1,20 @@
 package com.mycompany.tennis.core.service;
 
+import com.mycompany.tennis.core.EntityManagerHolder;
 import com.mycompany.tennis.core.HibernateUtil;
+import com.mycompany.tennis.core.dto.JoueurDto;
 import com.mycompany.tennis.core.entity.Joueur;
+import com.mycompany.tennis.core.entity.Match;
 import com.mycompany.tennis.core.repository.JoueurRepositoryImpl;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JoueurService {
 
@@ -119,6 +129,38 @@ public class JoueurService {
             }
 
 
+        }
+    }
+
+    public List<JoueurDto> getListeJoueurs(char sexe) {
+        EntityManager em = null;
+        EntityTransaction tx = null;
+        Match match = null;
+        List<JoueurDto> dtos = new ArrayList<>();
+        try {
+            em = EntityManagerHolder.getCurrentEntityManager();
+            tx = em.getTransaction();
+            tx.begin();
+            List<Joueur> joueurs = joueurRepository.list(sexe);
+            for(Joueur j : joueurs) {
+                final JoueurDto joueurDto = new JoueurDto();
+                joueurDto.setId(j.getId());
+                joueurDto.setNom(j.getNom());
+                joueurDto.setPrenom(j.getPrenom());
+                joueurDto.setSexe(j.getSexe());
+                dtos.add(joueurDto);
+            }
+            tx.commit();
+
+
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+            return dtos;
         }
     }
 }

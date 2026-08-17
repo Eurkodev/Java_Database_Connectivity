@@ -10,6 +10,9 @@ import com.mycompany.tennis.core.repository.ScoreRepositoryImpl;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MatchService {
 
     private ScoreRepositoryImpl scoreRepository;
@@ -142,50 +145,52 @@ public class MatchService {
             tx = session.beginTransaction();
             matchRepository.delete(id);
             tx.commit();
-        }
-            catch(Exception e){
-                if (tx != null) tx.rollback();
-                e.printStackTrace();
-            } finally{
-                if (session != null) {
-                    session.close();
-                }
-            }
-    }
-        public void enregistrerNouveauMatch(Match match) {
-            matchRepository.create(match);
-            scoreRepository.create(match.getScore());
-        }
-
-        public void tapisVert (Long id){
-
-            Session session = null;
-            Transaction tx = null;
-            Match match = null;
-
-            try {
-                session = HibernateUtil.getSessionFactory().getCurrentSession();
-                tx = session.beginTransaction();
-                match = matchRepository.getById(id);
-
-                Joueur ancienVainqueur = match.getVainqueur();
-                match.setVainqueur(match.getFinaliste());
-                match.setFinaliste(ancienVainqueur);
-
-                match.getScore().setSet1((byte) 0);
-                match.getScore().setSet2((byte) 0);
-                match.getScore().setSet3((byte) 0);
-                match.getScore().setSet4((byte) 0);
-                match.getScore().setSet5((byte) 0);
-
-                tx.commit();
-            } catch (Exception e) {
-                if (tx != null) tx.rollback();
-                e.printStackTrace();
-            } finally {
-                if (session != null) {
-                    session.close();
-                }
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
             }
         }
     }
+
+    public void enregistrerNouveauMatch(Match match) {
+        matchRepository.create(match);
+        scoreRepository.create(match.getScore());
+    }
+
+    public void tapisVert(Long id) {
+
+        Session session = null;
+        Transaction tx = null;
+        Match match = null;
+
+        try {
+            session = HibernateUtil.getSessionFactory().getCurrentSession();
+            tx = session.beginTransaction();
+            match = matchRepository.getById(id);
+
+            Joueur ancienVainqueur = match.getVainqueur();
+            match.setVainqueur(match.getFinaliste());
+            match.setFinaliste(ancienVainqueur);
+
+            match.getScore().setSet1((byte) 0);
+            match.getScore().setSet2((byte) 0);
+            match.getScore().setSet3((byte) 0);
+            match.getScore().setSet4((byte) 0);
+            match.getScore().setSet5((byte) 0);
+
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+   
+}

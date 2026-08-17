@@ -1,5 +1,6 @@
 package com.mycompany.tennis.core.service;
 
+import com.mycompany.tennis.core.EntityManagerHolder;
 import com.mycompany.tennis.core.HibernateUtil;
 import com.mycompany.tennis.core.dto.EpreuveFullDto;
 import com.mycompany.tennis.core.dto.EpreuveLightDto;
@@ -7,12 +8,17 @@ import com.mycompany.tennis.core.dto.JoueurDto;
 import com.mycompany.tennis.core.dto.TournoiDto;
 import com.mycompany.tennis.core.entity.Epreuve;
 import com.mycompany.tennis.core.entity.Joueur;
+import com.mycompany.tennis.core.entity.Match;
 import com.mycompany.tennis.core.repository.EpreuveRepositoryImpl;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class EpreuveService {
     private EpreuveRepositoryImpl epreuveRepository;
@@ -89,5 +95,40 @@ public class EpreuveService {
             if (session != null) session.close();
         }
         return dto;
+    }
+    public List<EpreuveFullDto> getListeEpreuves(String codeTournoi) {
+        EntityManager em = null;
+        EntityTransaction tx = null;
+        Match match = null;
+        List<EpreuveFullDto> dtos = new ArrayList<>();
+        try {
+            em = EntityManagerHolder.getCurrentEntityManager();
+            tx = em.getTransaction();
+            tx.begin();
+            List<Epreuve> epreuve = epreuveRepository.list(codeTournoi);
+            for(Epreuve e : epreuve) {
+                final EpreuveFullDto epreuveDto = new EpreuveFullDto();
+                epreuveDto.setId(e.getId());
+                epreuveDto.setAnnee(e.getAnnee());
+                epreuveDto.setTypeEpreuve(e.getTypeEpreuve());
+                TournoiDto tournoiDto = new TournoiDto();
+                tournoiDto.setId(e.getTournoi().getId());
+                tournoiDto.setNom(e.getTournoi().getNom());
+                tournoiDto.setCode(e.getTournoi().getCode());
+                epreuveDto.setTournoi(tournoiDto);
+                dtos.add(epreuveDto);
+            }
+            tx.commit();
+
+
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+            return dtos;
+        }
     }
 }
